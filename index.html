@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +7,8 @@
     <script type="importmap">
     {
       "imports": {
-        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
         "mindar-image-three": "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"
       }
     }
@@ -16,15 +16,115 @@
     <script src="main.js" type="module"></script>
 
     <style>
-      body {
+      /* ทำให้ทุกอย่างเต็มจอและไม่มีขอบ */
+      html, body {
         margin: 0;
+        padding: 0;
         width: 100%;
         height: 100%;
-        position: relative;
         overflow: hidden;
+        position: relative;
+        background-color: #000;
+      }
+
+      /* Container สำหรับ AR View */
+      #ar-container {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+      }
+
+      /* Overlay สำหรับ UI ทั้งหมด */
+      #overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        color: white;
+        font-family: Arial, sans-serif;
+        background: rgba(0, 0, 0, 0.5);
+        text-align: center;
+      }
+
+      /* ปุ่ม Start */
+      #start-button {
+        padding: 15px 30px;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: black;
+        background-color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      #start-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      /* UI แนะนำการสแกน */
+      #scanning-ui {
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 15px;
+        border: 2px solid white;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        animation: pulse 2s infinite;
+      }
+      
+      #scanning-ui h2 {
+          margin-top: 0;
+      }
+
+      /* Animation สำหรับกรอบสแกน */
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+        50% {
+          box-shadow: 0 0 30px rgba(255, 255, 255, 0.9);
+        }
+        100% {
+          box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+      }
+
+      /* Utility class สำหรับซ่อน element */
+      .hidden {
+        display: none !important;
       }
     </style>
   </head>
   <body>
+    <!-- Container หลักสำหรับ AR -->
+    <div id="ar-container"></div>
+    
+    <!-- Overlay สำหรับ UI ทั้งหมด -->
+    <div id="overlay">
+        <!-- หน้าจอเริ่มต้น -->
+        <div id="splash-screen">
+            <h1>Web AR Project</h1>
+            <p>กดปุ่มเพื่อเริ่มต้นใช้งานกล้อง</p>
+            <button id="start-button">Start AR</button>
+        </div>
+
+        <!-- UI แนะนำการสแกน (ซ่อนไว้ตอนแรก) -->
+        <div id="scanning-ui" class="hidden">
+            <h2>กำลังค้นหาภาพ...</h2>
+            <p>โปรดสแกนภาพเป้าหมาย</p>
+        </div>
+    </div>
   </body>
-</html
+</html>
